@@ -19,6 +19,11 @@ package org.springframework.cloud.stream.app.pgcopy.sink;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.stream.app.jdbc.SupportsShorthands;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Used to configure the pgcopy sink module options that are related to writing using the PostgreSQL CopyManager API.
@@ -36,14 +41,25 @@ public class PgcopySinkProperties {
 	private String tableName;
 
 	/**
-	 * Threshold in number of messages when file will be automatically flushed and rolled over.
+	 * The names of the columns that shall receive data.
+	 * Also used at initialization time to issue the DDL.
+	 */
+	private List<String> columns = Collections.singletonList("payload");
+
+	/**
+	 * Threshold in number of messages when data will be flushed to database table.
 	 */
 	private int batchSize = 10000;
 
 	/**
-	 * Idle timeout in milliseconds when Hadoop file resource is automatically closed.
+	 * Idle timeout in milliseconds when data is automatically flushed to database table.
 	 */
 	private long idleTimeout = -1L;
+
+	/**
+	 * 'true', 'false' or the location of a custom initialization script for the table.
+	 */
+	private String initialize = "false";
 
 	public String getTableName() {
 		return tableName;
@@ -51,6 +67,15 @@ public class PgcopySinkProperties {
 
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
+	}
+
+	public List<String> getColumns() {
+		return columns;
+	}
+
+	@SupportsShorthands
+	public void setColumns(List<String> columns) {
+		this.columns = columns;
 	}
 
 	public int getBatchSize() {
@@ -67,5 +92,13 @@ public class PgcopySinkProperties {
 
 	public void setIdleTimeout(long idleTimeout) {
 		this.idleTimeout = idleTimeout;
+	}
+
+	public String getInitialize() {
+		return initialize;
+	}
+
+	public void setInitialize(String initialize) {
+		this.initialize = initialize;
 	}
 }

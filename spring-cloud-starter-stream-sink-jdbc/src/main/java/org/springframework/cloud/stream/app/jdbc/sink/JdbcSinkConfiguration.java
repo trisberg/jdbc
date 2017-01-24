@@ -33,7 +33,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.app.jdbc.DefaultInitializationScriptResource;
 import org.springframework.cloud.stream.messaging.Sink;
+import org.springframework.cloud.stream.app.jdbc.ShorthandMapConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.expression.EvaluationContext;
@@ -153,7 +155,8 @@ public class JdbcSinkConfiguration {
 		databasePopulator.setIgnoreFailedDrops(true);
 		dataSourceInitializer.setDatabasePopulator(databasePopulator);
 		if ("true".equals(properties.getInitialize())) {
-			databasePopulator.addScript(new DefaultInitializationScriptResource(properties));
+			databasePopulator.addScript(new DefaultInitializationScriptResource(properties.getTableName(),
+					properties.getColumns().keySet()));
 		} else {
 			databasePopulator.addScript(resourceLoader.getResource(properties.getInitialize()));
 		}

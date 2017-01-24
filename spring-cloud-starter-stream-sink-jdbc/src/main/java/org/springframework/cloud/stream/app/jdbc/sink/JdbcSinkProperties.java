@@ -21,6 +21,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.stream.app.jdbc.SupportsShorthands;
+
 
 /**
  * Holds configuration properties for the Jdbc Sink module.

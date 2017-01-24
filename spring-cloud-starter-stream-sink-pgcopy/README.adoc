@@ -8,15 +8,16 @@ A module that writes its incoming payload to an RDBMS using the PostgreSQL COPY 
 The **$$jdbc$$** $$sink$$ has the following options:
 
 //tag::configuration-properties[]
-$$pgcopy.batch-size$$:: $$Threshold in number of messages when file will be automatically flushed and rolled over.$$ *($$Integer$$, default: `$$10000$$`)*
-$$pgcopy.idle-timeout$$:: $$Idle timeout in milliseconds when Hadoop file resource is automatically closed.$$ *($$Long$$, default: `$$-1$$`)*
+$$pgcopy.batch-size$$:: $$Threshold in number of messages when data will be flushed to database table.$$ *($$Integer$$, default: `$$10000$$`)*
+$$pgcopy.columns$$:: $$The names of the columns that shall receive data.
+ Also used at initialization time to issue the DDL.$$ *($$java.util.List<java.lang.String>$$, default: `$$payload$$`)*
+$$pgcopy.idle-timeout$$:: $$Idle timeout in milliseconds when data is automatically flushed to database table.$$ *($$Long$$, default: `$$-1$$`)*
+$$pgcopy.initialize$$:: $$'true', 'false' or the location of a custom initialization script for the table.$$ *($$String$$, default: `$$false$$`)*
 $$pgcopy.table-name$$:: $$The name of the table to write into.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.datasource.driver-class-name$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.datasource.init-sql$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.datasource.initialize$$:: $$Populate the database using 'data.sql'.$$ *($$Boolean$$, default: `$$true$$`)*
-$$spring.datasource.password$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.datasource.url$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.datasource.username$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.driver-class-name$$:: $$Fully qualified name of the JDBC driver. Auto-detected based on the URL by default.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.password$$:: $$Login password of the database.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.url$$:: $$JDBC url of the database.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.username$$:: $$Login user of the database.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 NOTE: The module also uses Spring Boot's http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-configure-datasource[DataSource support] for configuring the database connection, so properties like `spring.datasource.url` _etc._ apply.

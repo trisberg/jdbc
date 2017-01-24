@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.jdbc.sink;
+package org.springframework.cloud.stream.app.jdbc;
 
 import org.junit.Test;
 

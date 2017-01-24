@@ -31,13 +31,16 @@ import org.postgresql.core.BaseConnection;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.app.jdbc.DefaultInitializationScriptResource;
 import org.springframework.cloud.stream.binding.InputBindingLifecycle;
 import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataAccessException;
 import org.springframework.integration.aggregator.DefaultAggregatingMessageGroupProcessor;
 import org.springframework.integration.aggregator.ExpressionEvaluatingCorrelationStrategy;
@@ -50,6 +53,8 @@ import org.springframework.integration.store.MessageGroupStoreReaper;
 import org.springframework.integration.store.SimpleMessageStore;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.jdbc.support.nativejdbc.Jdbc4NativeJdbcExtractor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -137,6 +142,23 @@ public class PgcopySinkConfiguration {
 				}
 			}
 		};
+	}
+
+	@ConditionalOnProperty("pgcopy.initialize")
+	@Bean
+	public DataSourceInitializer nonBootDataSourceInitializer(DataSource dataSource, ResourceLoader resourceLoader) {
+		DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
+		dataSourceInitializer.setDataSource(dataSource);
+		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
+		databasePopulator.setIgnoreFailedDrops(true);
+		dataSourceInitializer.setDatabasePopulator(databasePopulator);
+		if ("true".equals(properties.getInitialize())) {
+			databasePopulator.addScript(new DefaultInitializationScriptResource(properties.getTableName(),
+					properties.getColumns()));
+		} else {
+			databasePopulator.addScript(resourceLoader.getResource(properties.getInitialize()));
+		}
+		return dataSourceInitializer;
 	}
 
 	@Bean

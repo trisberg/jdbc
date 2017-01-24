@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.jdbc.sink;
+package org.springframework.cloud.stream.app.jdbc;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
